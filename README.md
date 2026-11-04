@@ -8,8 +8,8 @@ Pizarra táctica web para preparar jugadas de HaxBall.
 - Secuencias de varios pasos con reproducción animada.
 - Plantillas de córner, presión alta y defensa.
 - Tamaño de cancha, zoom y radios configurables.
-- Selector de canchas: Futx3, Futx5, Futx7 y Rsx4, con proporciones y marcas adaptadas a cada modalidad.
-- Pantalla grande para trabajar con la pizarra ocupando la pantalla, manteniendo herramientas y controles accesibles.
+- Selector de canchas: Futx3, Futx5, Futx7 y Rsx4. Futx3 usa el archivo de estadio HBS «Futsal x3 by Bazinga» compartido para trazar sus líneas y áreas.
+- Pantalla grande a pantalla completa, con el campo ampliado y un desplegable para bajar/ocultar herramientas y controles. Las coordenadas del cursor se ajustan al escalado del SVG.
 - Modo solo vista para mostrar el tablero sin permitir ediciones.
 - Importar/exportar jugadas en JSON.
 - Lector inicial de archivos `.hbr2`: valida la cabecera HBR2, lee versión y duración, y permite seleccionar un minuto.
