@@ -15,7 +15,7 @@ Este parche modifica el analizador de HaxBall para exportar posiciones **obtenid
 1. Abrí https://github.com/haxball-replay-analyzer/haxball-replay-analyzer.github.io/fork y creá el fork en tu cuenta de GitHub.
 2. Cuando termine, compartime el enlace del fork. Desde ahí puedo aplicar este parche sobre la rama `react` y preparar la publicación. No hace falta que edites el código a mano.
 3. La publicación usará el nombre de repositorio `haxball-replay-analyzer` y la dirección `https://chris-afk-hub.github.io/haxball-replay-analyzer/`.
-4. Después, en Tac-Board, pegá esa URL en el campo del analizador y pulsá **Abrir analizador personalizado**. Cargá allí el mismo archivo `.hbr2`.
+4. Después, en Tac-Board, pegá esa URL en el campo del analizador y pulsá **Configurar analizador con puente**. Cargá allí el mismo archivo `.hbr2`.
 5. Al llegar los primeros fotogramas reales, se habilitará **Analizar repetición** en Tac-Board.
 
 ## Importante
