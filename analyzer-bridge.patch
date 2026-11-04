@@ -1,7 +1,7 @@
 diff --git a/src/game2.js b/src/game2.js
 --- a/src/game2.js
 +++ b/src/game2.js
-@@ -29,6 +29,16 @@
+@@ -29,4 +29,14 @@
  function newReplay() {
    dispatchClearStats();
 +  // Tac-Board bridge: reset the exported timeline for every loaded replay.
