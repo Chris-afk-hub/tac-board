@@ -12,11 +12,11 @@ Este parche modifica el analizador de HaxBall para exportar posiciones **obtenid
 
 ## Aplicación
 
-1. Hacé un fork de https://github.com/haxball-replay-analyzer/haxball-replay-analyzer.github.io en tu cuenta. El fork no se crea automáticamente desde Tac-Board; requiere tu sesión de GitHub.
-2. En el fork, seleccioná la rama `react` (el parche está escrito específicamente para esa rama). Abrí `src/game2.js` y aplicá los dos cambios de `analyzer-bridge.patch`.
-3. Renombrá el repositorio del fork a `haxball-replay-analyzer`. En `package.json`, cambiá `homepage` a `https://chris-afk-hub.github.io/haxball-replay-analyzer/`. Luego ejecutá `npm install` y `npm run deploy` desde el repositorio para generar la rama `gh-pages`; activá GitHub Pages desde esa rama y la carpeta raíz. La URL publicada debería ser `https://chris-afk-hub.github.io/haxball-replay-analyzer/`.
-4. Abrí Tac-Board y, desde ahí, abrí tu analizador personalizado en otra pestaña. Es importante que la pestaña del analizador sea abierta desde Tac-Board para que exista `window.opener`.
-5. En Tac-Board, pegá `https://chris-afk-hub.github.io/haxball-replay-analyzer/` en el campo de URL y pulsá **Abrir analizador personalizado**. Cargá el mismo archivo `.hbr2` en esa pestaña. Al reconstruirse el partido, el analizador enviará los fotogramas a Tac-Board. El botón **Analizar repetición** se habilita cuando llega el primer fotograma y resume cuántos se recibieron.
+1. Abrí https://github.com/haxball-replay-analyzer/haxball-replay-analyzer.github.io/fork y creá el fork en tu cuenta de GitHub.
+2. Cuando termine, compartime el enlace del fork. Desde ahí puedo aplicar este parche sobre la rama `react` y preparar la publicación. No hace falta que edites el código a mano.
+3. La publicación usará el nombre de repositorio `haxball-replay-analyzer` y la dirección `https://chris-afk-hub.github.io/haxball-replay-analyzer/`.
+4. Después, en Tac-Board, pegá esa URL en el campo del analizador y pulsá **Abrir analizador personalizado**. Cargá allí el mismo archivo `.hbr2`.
+5. Al llegar los primeros fotogramas reales, se habilitará **Analizar repetición** en Tac-Board.
 
 ## Importante
 
