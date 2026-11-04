@@ -1,6 +1,6 @@
 # Puente de posiciones reales HBR2 → Tac-Board
 
-Este parche modifica el analizador de HaxBall para exportar posiciones **obtenidas del motor de simulación**, no posiciones inventadas.
+Este parche modifica el analizador de HaxBall para exportar posiciones **obtenidas del motor de simulación**, no posiciones inventadas. El cambio se aplica sobre la rama `react` del analizador.
 
 ## Qué hace
 
@@ -12,8 +12,8 @@ Este parche modifica el analizador de HaxBall para exportar posiciones **obtenid
 
 ## Aplicación
 
-1. Hacé un fork de https://github.com/haxball-replay-analyzer/haxball-replay-analyzer.github.io en tu cuenta.
-2. En el fork, abrí `src/game2.js` y aplicá los dos cambios de `analyzer-bridge.patch` (el parche está escrito contra la rama `react`).
+1. Hacé un fork de https://github.com/haxball-replay-analyzer/haxball-replay-analyzer.github.io en tu cuenta. El fork no se crea automáticamente desde Tac-Board; requiere tu sesión de GitHub.
+2. En el fork, seleccioná la rama `react` (el parche está escrito específicamente para esa rama). Abrí `src/game2.js` y aplicá los dos cambios de `analyzer-bridge.patch`.
 3. Renombrá el repositorio del fork a `haxball-replay-analyzer`. En `package.json`, cambiá `homepage` a `https://chris-afk-hub.github.io/haxball-replay-analyzer/`. Luego ejecutá `npm install` y `npm run deploy` desde el repositorio para generar la rama `gh-pages`; activá GitHub Pages desde esa rama y la carpeta raíz. La URL publicada debería ser `https://chris-afk-hub.github.io/haxball-replay-analyzer/`.
 4. Abrí Tac-Board y, desde ahí, abrí tu analizador personalizado en otra pestaña. Es importante que la pestaña del analizador sea abierta desde Tac-Board para que exista `window.opener`.
 5. En Tac-Board, pegá `https://chris-afk-hub.github.io/haxball-replay-analyzer/` en el campo de URL y pulsá **Abrir analizador personalizado**. Cargá el mismo archivo `.hbr2` en esa pestaña. Al reconstruirse el partido, el analizador enviará los fotogramas a Tac-Board. El botón **Analizar repetición** se habilita cuando llega el primer fotograma y resume cuántos se recibieron.
