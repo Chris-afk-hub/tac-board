@@ -19,7 +19,15 @@ Pizarra táctica web para preparar jugadas de HaxBall.
 Las cuatro canchas incluidas son diseños visuales base adaptados a cada formato. No se presentan como copias exactas de mapas originales de Bazinga; para reproducirlos con precisión hacen falta sus archivos de estadio o capturas de referencia.
 
 ## Análisis de replays: estado actual
-La pantalla REC valida la cabecera HBR2, muestra la duración y permite elegir minuto y segundo con precisión de un segundo. El reproductor de [HaxBall Replay Analyzer](https://github.com/haxball-replay-analyzer/haxball-replay-analyzer.github.io), publicado bajo licencia MIT, se abre en una pestaña nueva porque la versión incrustada no carga de forma fiable. El archivo debe seleccionarse nuevamente allí: el navegador no permite transferir automáticamente el archivo local a otra web. La hora elegida en Tac-Board es una referencia y todavía no busca ese instante en el reproductor externo. La pizarra aún no dibuja las posiciones reales: falta integrar el motor de simulación HBR2 y exportar las coordenadas por tick de jugadores y pelota.
+
+La pantalla REC valida la cabecera HBR2, muestra la duración y permite elegir minuto y segundo. La cancha tiene un receptor para las posiciones reconstruidas, pero el analizador público original todavía no las envía.
+
+Se agregó un parche para el motor del [HaxBall Replay Analyzer](https://github.com/haxball-replay-analyzer/haxball-replay-analyzer.github.io):
+- `analyzer-bridge.patch`: exporta una posición real de pelota y jugadores cada 60 ticks de simulación.
+- `ANALYZER_BRIDGE.md`: explica cómo aplicar el parche en una copia propia del analizador y publicarla.
+- En Tac-Board, pegá la URL de esa copia en el campo de analizador y abrila desde el botón. Así la pestaña del analizador conserva la conexión con Tac-Board mediante `window.opener.postMessage`.
+
+**Estado honesto:** el parche está preparado en este repositorio, pero todavía no está aplicado ni publicado en una copia del analizador. Por eso el analizador público original no va a enviar coordenadas. No se muestran posiciones simuladas o inventadas.
 
 ## Publicar con GitHub Pages
 En el repositorio: **Settings → Pages → Deploy from a branch → main → /(root) → Save**. Luego la web queda en:
