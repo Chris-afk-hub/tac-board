@@ -23,7 +23,7 @@ Las cuatro canchas incluidas son diseños visuales base adaptados a cada formato
 La pantalla REC valida la cabecera HBR2, muestra la duración y permite elegir minuto y segundo. El botón **Analizar repetición** se habilita al recibir el primer fotograma real del analizador personalizado. El analizador público original todavía no envía esas posiciones.
 
 Se agregó un parche para el motor del [HaxBall Replay Analyzer](https://github.com/haxball-replay-analyzer/haxball-replay-analyzer.github.io):
-- `analyzer-bridge.patch`: exporta una posición real de pelota y jugadores cada 60 ticks de simulación.
+- `analyzer-bridge.patch`: envía fotogramas reales de pelota y jugadores cada 60 ticks de simulación.
 - `ANALYZER_BRIDGE.md`: explica cómo aplicar el parche en una copia propia del analizador y publicarla.
 - En Tac-Board, pegá la URL de esa copia en el campo de analizador y abrila desde el botón. Así la pestaña del analizador conserva la conexión con Tac-Board mediante `window.opener.postMessage`.
 
