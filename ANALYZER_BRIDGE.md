@@ -6,8 +6,8 @@ Este parche modifica el analizador de HaxBall para exportar posiciones **obtenid
 
 - Reinicia la línea de tiempo exportada al cargar una repetición.
 - Lee la pelota desde `d[0].a` y los discos de jugadores desde `b[i].H.a` dentro del callback de simulación.
-- Exporta un fotograma cada 60 ticks (aprox. 1 segundo).
-- Envía la línea de tiempo a la pestaña que abrió el analizador mediante `window.opener.postMessage`.
+- Envía un fotograma individual cada 60 ticks (aprox. 1 segundo), evitando retransmitir toda la línea de tiempo en cada actualización.
+- Cada fotograma incluye `timeSec`, la pelota y los jugadores, y se envía a la pestaña que abrió el analizador mediante `window.opener.postMessage`.
 - Conserva nombres y equipos tal como los entrega el motor.
 
 ## Aplicación
