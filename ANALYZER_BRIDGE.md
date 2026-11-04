@@ -16,7 +16,7 @@ Este parche modifica el analizador de HaxBall para exportar posiciones **obtenid
 2. En el fork, abrí `src/game2.js` y aplicá los dos cambios de `analyzer-bridge.patch` (el parche está escrito contra la rama `react`).
 3. Renombrá el repositorio del fork a `haxball-replay-analyzer`. En `package.json`, cambiá `homepage` a `https://chris-afk-hub.github.io/haxball-replay-analyzer/`. Luego ejecutá `npm install` y `npm run deploy` desde el repositorio para generar la rama `gh-pages`; activá GitHub Pages desde esa rama y la carpeta raíz. La URL publicada debería ser `https://chris-afk-hub.github.io/haxball-replay-analyzer/`.
 4. Abrí Tac-Board y, desde ahí, abrí tu analizador personalizado en otra pestaña. Es importante que la pestaña del analizador sea abierta desde Tac-Board para que exista `window.opener`.
-5. En Tac-Board, pegá `https://chris-afk-hub.github.io/haxball-replay-analyzer/` en el campo de URL y pulsá **Abrir analizador personalizado**. Cargá el mismo archivo `.hbr2` en esa pestaña. Al reconstruirse el partido, el analizador enviará los fotogramas a Tac-Board.
+5. En Tac-Board, pegá `https://chris-afk-hub.github.io/haxball-replay-analyzer/` en el campo de URL y pulsá **Abrir analizador personalizado**. Cargá el mismo archivo `.hbr2` en esa pestaña. Al reconstruirse el partido, el analizador enviará los fotogramas a Tac-Board. El botón **Analizar repetición** se habilita cuando llega el primer fotograma y resume cuántos se recibieron.
 
 ## Importante
 
