@@ -30,3 +30,10 @@ Abrí la página en un navegador moderno. No requiere instalación ni servidor p
 
 ## Formato de jugadas
 Las jugadas se guardan como JSON con el identificador `haxball-tac-board`, versión 2.
+
+
+### Integración de posiciones REC (en desarrollo)
+
+La cancha REC ahora incluye una capa SVG y un receptor de mensajes para fotogramas reconstruidos. El formato esperado es un mensaje `postMessage` desde `https://haxball-replay-analyzer.github.io` con `type: "TACBOARD_HAXBALL_REPLAY_FRAMES"`, `stadium: { width, height }` y `frames` (un fotograma por segundo, con `ball: { x, y }` y `players: [{ name, team, x, y }]`). Al elegir un segundo, Tac-Board dibuja los jugadores y la pelota usando coordenadas del estadio.
+
+**Pendiente para que funcione con archivos reales:** conectar el motor HBR2 para que envíe esos fotogramas. El analizador actual calcula posiciones de jugadores internamente, pero no publica ese protocolo ni envía las coordenadas de la pelota a Tac-Board. Por eso esta capa de dibujo no debe confundirse con una integración completa del motor.
