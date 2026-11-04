@@ -1,7 +1,7 @@
 diff --git a/src/game2.js b/src/game2.js
 --- a/src/game2.js
 +++ b/src/game2.js
-@@ -29,4 +29,14 @@
+@@ -29,4 +29,15 @@
  function newReplay() {
    dispatchClearStats();
 +  // Tac-Board bridge: reset the exported timeline for every loaded replay.
@@ -17,7 +17,7 @@ diff --git a/src/game2.js b/src/game2.js
 +  }
    keepUpdating = true;
    loading = {
-@@ -6784,3 +6784,25 @@
+@@ -6784,3 +6784,26 @@
          if (keepUpdating) {
 +          // Export one authentic simulation snapshot per second (60 HaxBall ticks).
 +          // d[0].a is the simulated ball; b contains the simulated player discs.
