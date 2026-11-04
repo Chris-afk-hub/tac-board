@@ -13,13 +13,13 @@ Pizarra táctica web para preparar jugadas de HaxBall.
 - Modo solo vista para mostrar el tablero sin permitir ediciones.
 - Importar/exportar jugadas en JSON.
 - Lector inicial de archivos `.hbr2`: valida la cabecera HBR2 y lee versión y duración.
-- Reproductor integrado mediante el proyecto abierto [HaxBall Replay Analyzer](https://haxball-replay-analyzer.github.io/) (licencia MIT), con reproducción, velocidad y línea de tiempo.
+- Acceso directo al [HaxBall Replay Analyzer](https://haxball-replay-analyzer.github.io/) (licencia MIT) en una pestaña nueva; se evita la incrustación que no carga de forma fiable.
 
 ## Nota sobre los mapas
 Las cuatro canchas incluidas son diseños visuales base adaptados a cada formato. No se presentan como copias exactas de mapas originales de Bazinga; para reproducirlos con precisión hacen falta sus archivos de estadio o capturas de referencia.
 
 ## Análisis de replays: estado actual
-La pantalla REC valida el archivo y muestra el reproductor del proyecto abierto [HaxBall Replay Analyzer](https://github.com/haxball-replay-analyzer/haxball-replay-analyzer.github.io), publicado bajo licencia MIT. El archivo debe seleccionarse una segunda vez dentro del reproductor: el navegador no permite transferir automáticamente un archivo local desde Tac-Board a una página de otro dominio. El analizador reproduce la grabación usando su motor; la cancha de referencia de Tac-Board todavía no recibe ni sincroniza esas posiciones. Si el navegador no permite mostrar el reproductor incrustado, se puede abrir en una pestaña nueva desde el enlace de respaldo.
+La pantalla REC valida la cabecera HBR2, muestra la duración y permite elegir minuto y segundo con precisión de un segundo. El reproductor de [HaxBall Replay Analyzer](https://github.com/haxball-replay-analyzer/haxball-replay-analyzer.github.io), publicado bajo licencia MIT, se abre en una pestaña nueva porque la versión incrustada no carga de forma fiable. El archivo debe seleccionarse nuevamente allí: el navegador no permite transferir automáticamente el archivo local a otra web. La hora elegida en Tac-Board es una referencia y todavía no busca ese instante en el reproductor externo. La pizarra aún no dibuja las posiciones reales: falta integrar el motor de simulación HBR2 y exportar las coordenadas por tick de jugadores y pelota.
 
 ## Publicar con GitHub Pages
 En el repositorio: **Settings → Pages → Deploy from a branch → main → /(root) → Save**. Luego la web queda en:
