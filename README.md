@@ -20,7 +20,7 @@ Las cuatro canchas incluidas son diseños visuales base adaptados a cada formato
 
 ## Análisis de replays: estado actual
 
-La pantalla REC valida la cabecera HBR2, muestra la duración y permite elegir minuto y segundo. La cancha tiene un receptor para las posiciones reconstruidas, pero el analizador público original todavía no las envía.
+La pantalla REC valida la cabecera HBR2, muestra la duración y permite elegir minuto y segundo. El botón **Analizar repetición** se habilita al recibir el primer fotograma real del analizador personalizado. El analizador público original todavía no envía esas posiciones.
 
 Se agregó un parche para el motor del [HaxBall Replay Analyzer](https://github.com/haxball-replay-analyzer/haxball-replay-analyzer.github.io):
 - `analyzer-bridge.patch`: exporta una posición real de pelota y jugadores cada 60 ticks de simulación.
@@ -42,6 +42,6 @@ Las jugadas se guardan como JSON con el identificador `haxball-tac-board`, versi
 
 ### Integración de posiciones REC (en desarrollo)
 
-La cancha REC ahora incluye una capa SVG y un receptor de mensajes para fotogramas reconstruidos. El formato esperado es un mensaje `postMessage` desde `https://haxball-replay-analyzer.github.io` con `type: "TACBOARD_HAXBALL_REPLAY_FRAMES"`, `stadium: { width, height }` y `frames` (un fotograma por segundo, con `ball: { x, y }` y `players: [{ name, team, x, y }]`). Al elegir un segundo, Tac-Board dibuja los jugadores y la pelota usando coordenadas del estadio.
+La cancha REC ahora incluye una capa SVG y un receptor de mensajes para fotogramas reconstruidos. El formato esperado es un mensaje `postMessage` desde la URL configurada del analizador personalizado con `type: "TACBOARD_HAXBALL_REPLAY_FRAME"`, `stadium: { width, height }` y `frame` (un fotograma por segundo, con `timeSec`, `ball: { x, y }` y `players: [{ name, team, x, y }]`). Al elegir un segundo, Tac-Board dibuja los jugadores y la pelota usando coordenadas del estadio.
 
 **Pendiente para que funcione con archivos reales:** conectar el motor HBR2 para que envíe esos fotogramas. El analizador actual calcula posiciones de jugadores internamente, pero no publica ese protocolo ni envía las coordenadas de la pelota a Tac-Board. Por eso esta capa de dibujo no debe confundirse con una integración completa del motor.
