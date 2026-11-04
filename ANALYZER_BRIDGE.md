@@ -1,0 +1,27 @@
+# Puente de posiciones reales HBR2 → Tac-Board
+
+Este parche modifica el analizador de HaxBall para exportar posiciones **obtenidas del motor de simulación**, no posiciones inventadas.
+
+## Qué hace
+
+- Reinicia la línea de tiempo exportada al cargar una repetición.
+- Lee la pelota desde `d[0].a` y los discos de jugadores desde `b[i].H.a` dentro del callback de simulación.
+- Exporta un fotograma cada 60 ticks (aprox. 1 segundo).
+- Envía la línea de tiempo a la pestaña que abrió el analizador mediante `window.opener.postMessage`.
+- Conserva nombres y equipos tal como los entrega el motor.
+
+## Aplicación
+
+1. Hacé un fork de https://github.com/haxball-replay-analyzer/haxball-replay-analyzer.github.io en tu cuenta.
+2. En el fork, abrí `src/game2.js` y aplicá los dos cambios de `analyzer-bridge.patch` (el parche está escrito contra la rama `react`).
+3. En la configuración del fork, activá GitHub Pages y publicá la aplicación desde la rama `gh-pages` después de ejecutar el build/deploy indicado por el `package.json`.
+4. Abrí Tac-Board y, desde ahí, abrí tu analizador personalizado en otra pestaña. Es importante que la pestaña del analizador sea abierta desde Tac-Board para que exista `window.opener`.
+5. Cargá el mismo archivo `.hbr2` en el analizador. Al reconstruirse el partido, el analizador enviará los fotogramas a Tac-Board.
+
+## Importante
+
+El analizador público original no contiene este parche y, por lo tanto, no envía coordenadas a Tac-Board. Este archivo prepara el cambio de motor, pero **no significa que la sincronización ya esté publicada o probada**.
+
+El puente usa como origen de destino `https://chris-afk-hub.github.io`, que corresponde a GitHub Pages del proyecto Tac-Board. Si publicás el fork bajo otro dominio, cambiá ese origen tanto en el parche como en el receptor de `index.html`.
+
+La extracción actual exporta un fotograma por segundo. La línea de tiempo corresponde a los ticks procesados por el motor desde que se carga la repetición.
