@@ -1,0 +1,46 @@
+diff --git a/src/game2.js b/src/game2.js
+--- a/src/game2.js
++++ b/src/game2.js
+@@
+ function newReplay() {
+   dispatchClearStats();
++  // Tac-Board bridge: reset the exported timeline for every loaded replay.
++  if (typeof window !== 'undefined') {
++    window.__tacBoardReplayTick = -1;
++    window.__tacBoardReplayFrames = [];
++    if (window.opener && !window.opener.closed) {
++      window.opener.postMessage(
++        { type: 'TACBOARD_HAXBALL_REPLAY_RESET' },
++        'https://chris-afk-hub.github.io'
++      );
++    }
++  }
+   keepUpdating = true;
+   loading = {
+@@
+         if (keepUpdating) {
++          // Export one authentic simulation snapshot per second (60 HaxBall ticks).
++          // d[0].a is the simulated ball; b contains the simulated player discs.
++          if (typeof window !== 'undefined' && window.opener && !window.opener.closed) {
++            if (window.__tacBoardReplayTick == null) window.__tacBoardReplayTick = -1;
++            window.__tacBoardReplayTick++;
++            if (window.__tacBoardReplayTick % 60 === 0) {
++              const frame = {
++                ball: { x: d[0].a.x, y: d[0].a.y },
++                players: b.filter(player => player.H != null).map(player => ({
++                  name: player.w,
++                  team: player.ea.w,
++                  x: player.H.a.x,
++                  y: player.H.a.y
++                }))
++              };
++              window.__tacBoardReplayFrames.push(frame);
++              window.opener.postMessage({
++                type: 'TACBOARD_HAXBALL_REPLAY_FRAMES',
++                stadium: { width: this.S.Td, height: this.S.Sd },
++                frames: window.__tacBoardReplayFrames
++              }, 'https://chris-afk-hub.github.io');
++            }
++          }
+           //if (Math.random() < 0.002) console.log(a,b);
+           match[match.length - 1].gameTicks++;
