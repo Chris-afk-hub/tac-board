@@ -88,7 +88,7 @@ $('analyzeReplay').onclick=()=>{if(!recSnapshots?.frames?.some(Boolean))return;c
   const red=players.filter(p=>String(p.team).toLowerCase().includes('red')).length;
   const blue=players.filter(p=>String(p.team).toLowerCase().includes('blue')).length;
   const perTeam=Math.max(red,blue);
-  const court=perTeam>=7?'futx7':perTeam>=5?'futx5':perTeam>=4?'rsx4':'futx3';
+  const court=perTeam>=6?'futx7':perTeam>=5?'futx5':perTeam>=4?'rsx4':'futx3';
   const sw=Number(recSnapshots.stadium.width),sh=Number(recSnapshots.stadium.height);
   if(!sw||!sh)return;
   stop();selectCourt(court);items=players.map((p,i)=>({
