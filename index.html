@@ -40,7 +40,7 @@ function getReplayRect(court,stadium,width,height){
 }
 function mapReplayPoint(p,stadium,court,width,height){
  const r=getReplayRect(court,stadium,width,height);
- return{x:r.x+((Number(p.x)+r.halfW)/(2*r.halfW))*r.w,y:r.y+((Number(p.y)+r.halfH)/(2*r.halfH))*r.h};
+ return{x:r.x+((Number(p.x)+r.halfW)/(2*r.halfW))*r.w,y:r.y+((r.halfH-Number(p.y))/(2*r.halfH))*r.h};
 }
 function setSize(){
  $('field').setAttribute('viewBox',`0 0 ${W} ${H}`);$('field').style.width=zoom+'%';$('widthLabel').textContent=W;$('heightLabel').textContent=H;$('zoomLabel').textContent=zoom+'%';
@@ -139,7 +139,7 @@ function renderRecFrame(){
  const st=frame.stadium||recSnapshots.stadium,court=recSnapshots.court||replayCourtFor(recSnapshots.rawFrames||recSnapshots.frames);
  if(!st){$('recNotice').textContent='Falta la geometría del estadio enviada por el analizador.';return}
  selectRecCourt(court,st);
- const c=courtPresets[court],r=getReplayRect(court,st,c.w,c.h),px=x=>Math.max(0,Math.min(c.w,r.x+((+x+r.halfW)/(2*r.halfW))*r.w)),py=y=>Math.max(0,Math.min(c.h,r.y+((+y+r.halfH)/(2*r.halfH))*r.h));
+ const c=courtPresets[court],r=getReplayRect(court,st,c.w,c.h),px=x=>Math.max(0,Math.min(c.w,r.x+((+x+r.halfW)/(2*r.halfW))*r.w)),py=y=>Math.max(0,Math.min(c.h,r.y+((r.halfH-(+y))/(2*r.halfH))*r.h));
  const NS='http://www.w3.org/2000/svg';
  (frame.players||[]).forEach(p=>{if(!Number.isFinite(+p.x)||!Number.isFinite(+p.y))return;const x=px(p.x),y=py(p.y),dot=document.createElementNS(NS,'circle');dot.setAttribute('cx',x);dot.setAttribute('cy',y);dot.setAttribute('r',13);dot.setAttribute('fill',String(p.team).toLowerCase()==='red'?'#ff7777':'#72baff');dot.setAttribute('stroke','#fff');dot.setAttribute('stroke-width',2);g.append(dot);const label=document.createElementNS(NS,'text');label.setAttribute('x',x);label.setAttribute('y',y+1);label.setAttribute('text-anchor','middle');label.setAttribute('dominant-baseline','middle');label.setAttribute('font-size',9);label.setAttribute('font-weight',800);label.setAttribute('fill','#101820');label.textContent=String(p.name||'').slice(0,12);g.append(label)});
  if(frame.ball&&Number.isFinite(+frame.ball.x)&&Number.isFinite(+frame.ball.y)){const bdot=document.createElementNS(NS,'circle');bdot.setAttribute('cx',px(frame.ball.x));bdot.setAttribute('cy',py(frame.ball.y));bdot.setAttribute('r',7);bdot.setAttribute('fill','#fff');bdot.setAttribute('stroke','#161616');bdot.setAttribute('stroke-width',2);g.append(bdot)}
