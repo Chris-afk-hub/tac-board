@@ -82,28 +82,26 @@ window.addEventListener('message',e=>{let allowed='';try{allowed=new URL($('anal
  const duration=Math.max(1,Math.floor(recDuration||0));
  const lastTime=raw.length?Number(raw[raw.length-1].timeSec)||0:0;
  const frames=[];
- const playerKey=p=>String(p.team||'').toLowerCase()+'|'+String(p.name||'').trim();
- for(let sec=0;sec<=Math.min(duration,Math.max(0,Math.ceil(lastTime)));sec++){
-   let left=raw[0],right=raw[raw.length-1];
-   for(let i=0;i<raw.length-1;i++){if(sec>=Number(raw[i].timeSec)&&sec<=Number(raw[i+1].timeSec)){left=raw[i];right=raw[i+1];break}}
-   if(!left)continue;
-   if(sec<Number(raw[0].timeSec)||sec>lastTime)continue;
-   const span=Math.max(1,Number(right.timeSec)-Number(left.timeSec));
-   const t=Math.max(0,Math.min(1,(sec-Number(left.timeSec))/span));
-   const leftMap=new Map((left.players||[]).filter(p=>p&&Number.isFinite(+p.x)&&Number.isFinite(+p.y)).map(p=>[playerKey(p),p]));
-   const rightMap=new Map((right.players||[]).filter(p=>p&&Number.isFinite(+p.x)&&Number.isFinite(+p.y)).map(p=>[playerKey(p),p]));
-   const keys=new Set([...leftMap.keys(),...rightMap.keys()]);
-   const players=[...keys].map(k=>{
-     const p=leftMap.get(k)||rightMap.get(k),q=rightMap.get(k)||p;
-     return {...p,x:Number(p.x)+(Number(q.x)-Number(p.x))*t,y:Number(p.y)+(Number(q.y)-Number(p.y))*t};
-   }).filter(p=>['red','blue'].includes(String(p.team).toLowerCase()));
-   const ball=left.ball&&right.ball?{x:Number(left.ball.x)+(Number(right.ball.x)-Number(left.ball.x))*t,y:Number(left.ball.y)+(Number(right.ball.y)-Number(left.ball.y))*t}:left.ball||right.ball||null;
-   frames[sec]={timeSec:sec,players,ball};
+ for(let sec=0;sec<=Math.min(duration,Math.floor(lastTime));sec++){
+   // Elegir una muestra real próxima al segundo pedido; no inventar/interpolar coordenadas.
+   const candidates=raw.filter(f=>Math.abs(Number(f.timeSec)-sec)<=0.051);
+   if(!candidates.length)continue;
+   candidates.sort((x,y)=>{
+     const xp=(x.players||[]).length,yp=(y.players||[]).length;
+     return yp-xp || Math.abs(Number(x.timeSec)-sec)-Math.abs(Number(y.timeSec)-sec);
+   });
+   const chosen=candidates[0];
+   frames[sec]={
+     timeSec:sec,
+     sourceTimeSec:Number(chosen.timeSec),
+     players:(chosen.players||[]).filter(p=>p&&Number.isFinite(+p.x)&&Number.isFinite(+p.y)&&['red','blue'].includes(String(p.team).toLowerCase())),
+     ball:chosen.ball||null
+   };
  }
  recSnapshots={stadium:d.stadium,frames};
  $('analyzeReplay').disabled=!frames.some(f=>f&&(f.players||[]).length);
  $('editReplay').disabled=$('analyzeReplay').disabled;
- $('recNotice').textContent='Repetición sincronizada: '+raw.length+' muestras originales · '+frames.length+' segundos interpolados · '+Math.max(0,...raw.map(f=>(f.players||[]).length))+' jugadores por muestra';
+ $('recNotice').textContent='Repetición sincronizada: '+raw.length+' muestras reales (10 por segundo) · '+frames.filter(Boolean).length+' segundos con muestra exacta · '+Math.max(0,...raw.map(f=>(f.players||[]).length))+' jugadores por muestra';
  renderRecFrame();return}if(d.type==='TACBOARD_HAXBALL_REPLAY_FRAMES'&&Array.isArray(d.frames)){recSnapshots=d;$('analyzeReplay').disabled=!d.frames.length;renderRecFrame()}});
 if('BroadcastChannel' in window){const tacBoardChannel=new BroadcastChannel('tacboard-hbr2');tacBoardChannel.onmessage=e=>{let origin='';try{origin=new URL($('analyzerUrl').value).origin}catch{}window.dispatchEvent(new MessageEvent('message',{data:e.data,origin}))}}
 $('analyzeReplay').onclick=()=>{if(!recSnapshots?.frames?.some(Boolean))return;const frames=recSnapshots.frames.filter(Boolean),last=frames.reduce((a,b)=>(b.timeSec||0)>(a.timeSec||0)?b:a,frames[0]),players=Math.max(0,...frames.map(f=>(f.players||[]).length));$('analysisSummary').hidden=false;$('analysisSummary').textContent='Posiciones recibidas: '+frames.length+' muestras · hasta '+fmt(last.timeSec||0)+' · máximo '+players+' jugadores por muestra. La pelota '+(frames.some(f=>f.ball)?'está incluida.':'no fue recibida.')+' Se mantiene el instante seleccionado.';renderRecFrame()};$('editReplay').onclick=()=>{
