@@ -98,6 +98,7 @@ function setRec(file){if(!file)return;recFile=file;recSnapshots=null;$('recActor
 function fmt(s){s=Math.max(0,Math.floor(s));let m=Math.floor(s/60),ss=s%60;return String(m).padStart(2,'0')+':'+String(ss).padStart(2,'0')}
 function setReplayDuration(seconds){
  seconds=Number(seconds);if(!Number.isFinite(seconds)||seconds<=0)return;
+ if(Math.abs(recDuration-seconds)<0.001&&!$('recMeta').hidden)return;
  recDuration=seconds;$('recMeta').hidden=false;$('recDuration').textContent=fmt(recDuration);
  $('minuteRange').max=Math.floor(recDuration);$('seekMinutes').max=Math.floor(recDuration/60);
  updateMinute(Math.min(Math.floor(+$('minuteRange').value||0),Math.floor(recDuration)));
