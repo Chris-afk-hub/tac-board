@@ -147,33 +147,59 @@ function renderRecFrame(){
 }
 function updateMinute(total){total=Math.max(0,Math.min(Math.floor(recDuration),Math.floor(Number(total)||0)));$('minuteRange').value=total;$('seekMinutes').value=Math.floor(total/60);$('seekSeconds').value=total%60;$('minuteLabel').textContent=fmt(total)+' / '+fmt(recDuration);if(recSnapshots)renderRecFrame();else $('recNotice').textContent='Instante seleccionado: '+fmt(total)+'. Esperando las posiciones reconstruidas por el motor HaxBall.'}
 function updateFromFields(){const m=Math.max(0,Number($('seekMinutes').value)||0),ss=Math.max(0,Math.min(59,Number($('seekSeconds').value)||0));updateMinute(m*60+ss)}
+function replaySampleKey(f){return f.replayTick!=null?'t'+f.replayTick:'s'+Number(f.timeSec).toFixed(1)}
+function replayCourtFromCounts(red,blue){const n=Math.max(red,blue);return n>=6?'futx7':n>=5?'futx5':n>=4?'rsx4':'futx3'}
+function acceptReplayFrame(frame,stadium){
+ if(!recSnapshots)recSnapshots={stadium:null,frames:[],rawFrames:[],rawKeys:new Set(),maxRed:0,maxBlue:0,court:'futx3',hasPlayers:false};
+ const st=frame.stadium||stadium||recSnapshots.stadium,normalized=st&&!frame.stadium?{...frame,stadium:st}:frame;
+ if(st)recSnapshots.stadium=st;
+ const key=replaySampleKey(normalized);
+ if(!recSnapshots.rawKeys)recSnapshots.rawKeys=new Set((recSnapshots.rawFrames||[]).map(replaySampleKey));
+ if(!recSnapshots.rawKeys.has(key)){
+  recSnapshots.rawKeys.add(key);recSnapshots.rawFrames.push(normalized);
+  const ps=normalized.players||[],tr=Number(normalized.teamCounts&&normalized.teamCounts.red),tb=Number(normalized.teamCounts&&normalized.teamCounts.blue);
+  recSnapshots.maxRed=Math.max(recSnapshots.maxRed||0,tr>0?tr:ps.filter(p=>String(p.team).toLowerCase()==='red').length);
+  recSnapshots.maxBlue=Math.max(recSnapshots.maxBlue||0,tb>0?tb:ps.filter(p=>String(p.team).toLowerCase()==='blue').length);
+  if(ps.length)recSnapshots.hasPlayers=true;
+  const t=Number(normalized.timeSec),sec=Math.round(t);
+  if(Math.abs(t-sec)<=0.051&&sec>=0&&sec<=Math.floor(recDuration)){
+   const candidate={...normalized,timeSec:sec,sourceTimeSec:t,stadium:normalized.stadium||recSnapshots.stadium};
+   const old=recSnapshots.frames[sec],n=(candidate.players||[]).length,on=old?(old.players||[]).length:-1;
+   if(!old||n>on||n===on&&Math.abs(t-sec)<Math.abs(Number(old.sourceTimeSec)-sec))recSnapshots.frames[sec]=candidate;
+  }
+ }
+ recSnapshots.court=replayCourtFromCounts(recSnapshots.maxRed||0,recSnapshots.maxBlue||0);
+ $('analyzeReplay').disabled=!recSnapshots.hasPlayers;
+ $('editReplay').disabled=!recSnapshots.hasPlayers;
+}
 function acceptReplayFrames(raw,stadium){
  const existing=recSnapshots&&recSnapshots.rawFrames?recSnapshots.rawFrames:[];
  const byTick=new Map();
- existing.concat(raw||[]).forEach(f=>{if(!f||!Number.isFinite(Number(f.timeSec)))return;const key=f.replayTick!=null?'t'+f.replayTick:'s'+Number(f.timeSec).toFixed(1);byTick.set(key,f)});
+ existing.concat(raw||[]).forEach(f=>{if(!f||!Number.isFinite(Number(f.timeSec)))return;byTick.set(replaySampleKey(f),f)});
  const all=Array.from(byTick.values()).sort((a,b)=>Number(a.timeSec)-Number(b.timeSec));
  const st=stadium||recSnapshots&&recSnapshots.stadium||null,duration=recDuration||Number($('minuteRange').max)||0;
- recSnapshots={stadium:st,rawFrames:all,frames:secondFramesFrom(all,duration,st),court:replayCourtFor(all)};
- $('analyzeReplay').disabled=!recSnapshots.frames.some(f=>f&&(f.players||[]).length);
- $('editReplay').disabled=$('analyzeReplay').disabled;
+ let maxRed=0,maxBlue=0;
+ all.forEach(f=>{const ps=f.players||[],tr=Number(f.teamCounts&&f.teamCounts.red),tb=Number(f.teamCounts&&f.teamCounts.blue);maxRed=Math.max(maxRed,tr>0?tr:ps.filter(p=>String(p.team).toLowerCase()==='red').length);maxBlue=Math.max(maxBlue,tb>0?tb:ps.filter(p=>String(p.team).toLowerCase()==='blue').length)});
+ const frames=secondFramesFrom(all,duration,st),hasPlayers=all.some(f=>(f.players||[]).length>0);
+ recSnapshots={stadium:st,rawFrames:all,rawKeys:new Set(all.map(replaySampleKey)),frames,court:replayCourtFromCounts(maxRed,maxBlue),maxRed,maxBlue,hasPlayers};
+ $('analyzeReplay').disabled=!hasPlayers;$('editReplay').disabled=!hasPlayers;
 }
 window.addEventListener('message',e=>{
  let allowed='';try{allowed=new URL($('analyzerUrl').value).origin}catch{}
  if(!allowed||e.origin!==allowed)return;
  const d=e.data;if(!d)return;
  if(d.type==='TACBOARD_HAXBALL_REPLAY_RESET'){
-  recSnapshots={stadium:null,frames:[],rawFrames:[],court:'futx3'};recDuration=0;$('recMeta').hidden=true;
+  recSnapshots={stadium:null,frames:[],rawFrames:[],rawKeys:new Set(),maxRed:0,maxBlue:0,hasPlayers:false,court:'futx3'};recDuration=0;$('recMeta').hidden=true;
   $('analyzeReplay').disabled=true;$('editReplay').disabled=true;$('analysisSummary').hidden=true;$('recActors').replaceChildren();
   $('recNotice').textContent='El analizador está reconstruyendo la repetición…';return;
  }
  if(d.type==='TACBOARD_HAXBALL_REPLAY_START'){setReplayDuration(d.durationSec);$('recNotice').textContent='Repetición cargada. Recibiendo posiciones reales del motor…';return}
  if(d.type==='TACBOARD_HAXBALL_REPLAY_FRAME'&&d.frame){
   if(d.durationSec)setReplayDuration(d.durationSec);
-  if(!recSnapshots)recSnapshots={stadium:null,frames:[],rawFrames:[],court:'futx3'};
+  if(!recSnapshots)recSnapshots={stadium:null,frames:[],rawFrames:[],rawKeys:new Set(),maxRed:0,maxBlue:0,hasPlayers:false,court:'futx3'};
   const st=d.frame.stadium||d.stadium||recSnapshots.stadium;
   const frame=st&&!d.frame.stadium?{...d.frame,stadium:st}:d.frame;
-  if(st)recSnapshots.stadium=st;
-  acceptReplayFrames([frame],st);renderRecFrame();return;
+  acceptReplayFrame(frame,st);renderRecFrame();return;
  }
  if(d.type==='TACBOARD_HAXBALL_REPLAY_DATA'&&Array.isArray(d.frames)){
   if(d.durationSec)setReplayDuration(d.durationSec);
